@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // API client instance
 export const api = axios.create({
-  baseURL: 'https://video-vault-72q0.onrender.com/api/v1',
+  baseURL: 'http://localhost:5000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
