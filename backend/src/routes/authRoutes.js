@@ -22,7 +22,12 @@ router.post(
     body('firstName').notEmpty().trim(),
     body('lastName').notEmpty().trim(),
     // tenantName required only if tenantId not provided
-    body('tenantName').if(() => !body('tenantId')).notEmpty().trim(),
+    body('tenantName')
+  .if((value, { req }) => !req.body.tenantId)
+  .notEmpty()
+  .withMessage('tenantName is required when tenantId is not provided')
+  .trim(),
+
   ],
   handleValidationErrors,
   authController.register
