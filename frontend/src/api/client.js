@@ -58,6 +58,10 @@ export const authAPI = {
     api.get(`/auth/tenant-info/${tenantId}`, {
       params: { email, inviteCode }
     }),
+
+  getTeamMembers: () => api.get('/auth/team'),
+
+  inviteMember: (email, role) => api.post('/auth/invite', { email, role }),
 };
 
 /**

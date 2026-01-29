@@ -18,7 +18,11 @@ export const RealtimeProvider = ({ children }) => {
   useEffect(() => {
     if (!user || !tenant) return;
 
-    const socketInstance = io('http://localhost:5000', {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+    // Remove /api/v1 suffix for socket connection if present, or use root domain
+    const socketUrl = apiUrl.replace('/api/v1', '');
+
+    const socketInstance = io(socketUrl, {
       auth: {
         userId: user.id || user._id,
         tenantId: tenant.id || tenant._id,

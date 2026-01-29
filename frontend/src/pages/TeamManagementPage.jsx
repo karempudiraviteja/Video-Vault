@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { authAPI } from '../api/client.js';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TeamManagementPage.css';
 
@@ -42,17 +43,9 @@ export const TeamManagementPage = () => {
   const fetchTeamMembers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/v1/auth/team', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
+      const response = await authAPI.getTeamMembers();
 
-      if (!response.ok) throw new Error('Failed to fetch team members');
-      
-      const data = await response.json();
-      setMembers(data.members || []);
+      setMembers(response.data.members || []);
       setError(null);
     } catch (err) {
       console.error('Fetch error:', err);
@@ -64,7 +57,7 @@ export const TeamManagementPage = () => {
 
   const handleInvite = async (e) => {
     e.preventDefault();
-    
+
     if (!inviteEmail.trim()) {
       setError('Please enter an email address');
       return;
@@ -72,35 +65,19 @@ export const TeamManagementPage = () => {
 
     try {
       setInviting(true);
-      const token = localStorage.getItem('token');
-      
-      const response = await fetch('http://localhost:5000/api/v1/auth/invite', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          email: inviteEmail,
-          role: inviteRole,
-        }),
-      });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send invite');
-      }
+      const response = await authAPI.inviteMember(inviteEmail, inviteRole);
+      const data = response.data;
 
       setInviteResult(data.inviteData);
       setInviteEmail('');
       setInviteRole('editor');
       setError(null);
-      
+
       setTimeout(() => fetchTeamMembers(), 1000);
     } catch (err) {
       console.error('Invite error:', err);
-      setError(err.message);
+      setError(err.response?.data?.error || err.message || 'Failed to send invite');
       setInviteResult(null);
     } finally {
       setInviting(false);
@@ -136,7 +113,7 @@ export const TeamManagementPage = () => {
             <p className="subtitle">Manage your workspace members and permissions</p>
           </div>
           {user?.role === 'admin' && (
-            <button 
+            <button
               className="invite-button"
               onClick={() => setShowInviteForm(!showInviteForm)}
             >
@@ -149,7 +126,7 @@ export const TeamManagementPage = () => {
         {showInviteForm && (
           <div className="invite-form-section">
             <h2>Invite Team Member</h2>
-            
+
             <form onSubmit={handleInvite} className="invite-form">
               <div className="form-group">
                 <label>Email Address</label>
@@ -174,9 +151,9 @@ export const TeamManagementPage = () => {
                   <option value="admin">👑 Admin (Full Access)</option>
                 </select>
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 className="submit-button"
                 disabled={inviting || !inviteEmail.trim()}
               >
@@ -197,20 +174,20 @@ export const TeamManagementPage = () => {
             <div className="invite-details">
               <div className="detail-item">
                 <label>Invited Member</label>
-                <p><strong>{inviteResult.email}</strong> as <span 
-                    className="role-badge"
-                    style={{ backgroundColor: getRoleBadgeColor(inviteResult.role) }}
-                  >
-                    {inviteResult.role.charAt(0).toUpperCase() + inviteResult.role.slice(1)}
-                  </span></p>
+                <p><strong>{inviteResult.email}</strong> as <span
+                  className="role-badge"
+                  style={{ backgroundColor: getRoleBadgeColor(inviteResult.role) }}
+                >
+                  {inviteResult.role.charAt(0).toUpperCase() + inviteResult.role.slice(1)}
+                </span></p>
               </div>
 
               <div className="detail-item">
                 <label>Share This Link</label>
                 <div className="url-display">
-                  <input 
-                    type="text" 
-                    readOnly 
+                  <input
+                    type="text"
+                    readOnly
                     value={`${window.location.origin}/register?${new URLSearchParams({
                       tenantId: inviteResult.tenantId,
                       inviteCode: inviteResult.inviteCode,
@@ -249,7 +226,7 @@ export const TeamManagementPage = () => {
         {/* Team Members List */}
         <div className="team-members-section">
           <h2>Current Members ({members.length})</h2>
-          
+
           {loading ? (
             <div className="loading">Loading team members...</div>
           ) : members.length === 0 ? (
@@ -264,7 +241,7 @@ export const TeamManagementPage = () => {
                 <div className="col-role">Role</div>
                 <div className="col-joined">Joined</div>
               </div>
-              
+
               {members.map((member) => (
                 <div key={member._id} className="table-row">
                   <div className="col-name">
@@ -276,7 +253,7 @@ export const TeamManagementPage = () => {
                   </div>
                   <div className="col-email">{member.email}</div>
                   <div className="col-role">
-                    <span 
+                    <span
                       className="role-badge"
                       style={{ backgroundColor: getRoleBadgeColor(member.role) }}
                     >
