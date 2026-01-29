@@ -1,3 +1,10 @@
+/* GLOBAL FIX */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Auth Pages (Login, Register) */
 .auth-page {
   min-height: 100vh;
@@ -10,20 +17,18 @@
 
 .auth-container {
   width: 100%;
-  max-width: 450px;
+  max-width: 550px;
 }
 
 .auth-card {
+  width: 100%;
   background: white;
   border-radius: 12px;
   padding: 2.5rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-.auth-card-register {
-  max-width: 550px;
-}
-
+/* Title */
 .auth-title {
   font-size: 2rem;
   text-align: center;
@@ -38,43 +43,57 @@
   font-size: 0.95rem;
 }
 
+/* Form */
 .auth-form {
   margin-bottom: 2rem;
 }
 
+/* FIRST + LAST NAME ROW */
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  width: 100%;
 }
 
+/* INPUTS */
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* MOBILE FIX */
 @media (max-width: 480px) {
   .form-row {
     grid-template-columns: 1fr;
   }
 }
 
+/* ERROR */
 .auth-error {
   background: #fee2e2;
   border: 1px solid var(--danger-color);
   color: var(--danger-color);
   padding: 1rem;
-  border-radius: var(--border-radius);
+  border-radius: 8px;
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
 }
 
+/* BUTTON */
 .auth-button {
   width: 100%;
   padding: 0.75rem;
   background: var(--primary-color);
   color: white;
   border: none;
-  border-radius: var(--border-radius);
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
 }
 
 .auth-button:hover:not(:disabled) {
@@ -86,6 +105,7 @@
   cursor: not-allowed;
 }
 
+/* LINK */
 .auth-link {
   text-align: center;
   color: var(--gray-600);
@@ -100,34 +120,4 @@
 
 .auth-link a:hover {
   text-decoration: underline;
-}
-
-.auth-info {
-  background: #dcfce7;
-  border: 1px solid #86efac;
-  color: #166534;
-  padding: 1rem;
-  border-radius: var(--border-radius);
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-  text-align: center;
-}
-
-.auth-info p {
-  margin: 0;
-}
-
-.auth-info strong {
-  font-weight: 600;
-}
-
-.badge {
-  display: inline-block;
-  background: #22c55e;
-  color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
 }
