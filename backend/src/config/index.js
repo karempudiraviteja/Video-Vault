@@ -23,8 +23,8 @@ export const config = {
   ffmpegPath: process.env.FFMPEG_PATH,
 
   // CORS
-  corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(origin => origin.trim()),
-  socketCors: (process.env.SOCKET_CORS || 'http://localhost:5173').split(',').map(origin => origin.trim()),
+  corsOrigin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(',').map(o => o.trim().replace(/\/$/, '')),
+  socketCors: (process.env.SOCKET_CORS || 'http://localhost:5173').split(',').map(o => o.trim().replace(/\/$/, '')),
 
   // AWS S3 (optional)
   aws: {
