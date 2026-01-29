@@ -13,7 +13,10 @@ export const createApp = (io) => {
 
   // Middleware
   app.use(cors({
-    origin: config.corsOrigin,
+    origin: [
+      "http://localhost:5173",
+      "https://video-vault-faye.vercel.app"
+    ],
     credentials: true,
   }));
 
