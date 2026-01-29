@@ -30,9 +30,15 @@ export const streamVideo = async (req, res) => {
       });
     }
 
+    // Check if video is on Cloudinary (starts with http)
+    if (video.filePath.startsWith('http')) {
+      console.log(`✅ Video hosted on Cloudinary, redirecting...`);
+      return res.redirect(video.filePath);
+    }
+
     // Resolve file path to absolute path
-    const videoPath = path.isAbsolute(video.filePath) 
-      ? video.filePath 
+    const videoPath = path.isAbsolute(video.filePath)
+      ? video.filePath
       : path.join(process.cwd(), video.filePath);
 
     console.log(`Checking file at: ${videoPath}`);

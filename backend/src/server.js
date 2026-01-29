@@ -22,7 +22,18 @@ const startServer = async () => {
     // Initialize Socket.io
     const io = new Server(httpServer, {
       cors: {
-        origin: config.socketCors,
+        origin: (origin, callback) => {
+          const allowedOrigins = config.socketCors;
+          if (!origin) return callback(null, true);
+
+          if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
+          } else {
+            console.log('❌ Socket CORS Blocked Origin:', origin);
+            console.log('✅ Socket Allowed Origins:', allowedOrigins);
+            return callback(new Error('Not allowed by CORS'), false);
+          }
+        },
         methods: ['GET', 'POST'],
         credentials: true,
       },
