@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // API client instance
 export const api = axios.create({
-  baseURL: 'http://localhost:5000/api/v1',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -35,28 +35,28 @@ api.interceptors.response.use(
  */
 export const authAPI = {
   register: (email, password, firstName, lastName, tenantName, tenantId, inviteCode) =>
-    api.post('/auth/register', { 
-      email, 
-      password, 
-      firstName, 
-      lastName, 
+    api.post('/auth/register', {
+      email,
+      password,
+      firstName,
+      lastName,
       tenantName,
       tenantId,
       inviteCode
     }),
-  
+
   login: (email, password) =>
     api.post('/auth/login', { email, password }),
-  
+
   getCurrentUser: () =>
     api.get('/auth/me'),
-  
+
   updateProfile: (firstName, lastName) =>
     api.put('/auth/profile', { firstName, lastName }),
 
   getTenantInfo: (tenantId, email, inviteCode) =>
-    api.get(`/auth/tenant-info/${tenantId}`, { 
-      params: { email, inviteCode } 
+    api.get(`/auth/tenant-info/${tenantId}`, {
+      params: { email, inviteCode }
     }),
 };
 
@@ -70,7 +70,7 @@ export const videoAPI = {
     if (description) formData.append('description', description);
     if (tags) formData.append('tags', tags);
     if (isPublic) formData.append('isPublic', isPublic);
-    
+
     return api.post('/videos/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -80,22 +80,22 @@ export const videoAPI = {
 
   getVideos: (filters = {}) =>
     api.get('/videos', { params: filters }),
-  
+
   getVideoById: (videoId) =>
     api.get(`/videos/${videoId}`),
-  
+
   updateVideo: (videoId, updates) =>
     api.put(`/videos/${videoId}`, updates),
-  
+
   deleteVideo: (videoId) =>
     api.delete(`/videos/${videoId}`),
-  
+
   streamVideo: (videoId) => {
     const token = localStorage.getItem('token');
     const baseUrl = `${api.defaults.baseURL}/videos/${videoId}/stream`;
     return token ? `${baseUrl}?token=${token}` : baseUrl;
   },
-  
+
   getVideoStatus: (videoId) =>
     api.get(`/videos/${videoId}/status`),
 };

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test</title>
+</head>
+<body>
+    <h1>CORS Test</h1>
+    <button onclick="testCors()">Test Connection</button>
+    <div id="output"></div>
+
+    <script>
+        async function testCors() {
+            const output = document.getElementById('output');
+            output.innerHTML = 'Testing...';
+            
+            try {
+                // Test Health endpoint (Public)
+                const response = await fetch('https://video-vault-72q0.onrender.com/api/v1/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    output.innerHTML = `<p style="color: green">✅ Success! Connected to backend. CORS is working for this origin.</p><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    output.innerHTML = `<p style="color: orange">⚠️ Connected but returned status ${response.status}</p>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<p style="color: red">❌ Error: ${error.message}. This likely means CORS is blocking the request.</p>`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
